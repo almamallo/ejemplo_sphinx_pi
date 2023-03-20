@@ -1,0 +1,8 @@
+
+Alquiler
+========
+
+.. automodule:: rental_app
+    :members:
+    :show-inheritance:
+    

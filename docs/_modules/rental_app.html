@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rental_app &mdash; Mi proyecto 0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Mi proyecto
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../app.html">Alquiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../classes.html">Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../util.html">Funciones de utilidad</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Mi proyecto</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rental_app</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rental_app</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Alquiler Barcos App</span>
+<span class="sd">===================</span>
+
+<span class="sd">Aplicación para gestión de alquiler de barcos.</span>
+
+<span class="sd">Módulo principal de la aplicación. Funcionalidades:</span>
+
+<span class="sd">- Gestión de clientes</span>
+<span class="sd">- Gestión de barcos</span>
+<span class="sd">- Gestión de alquileres</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">model.rental</span> <span class="kn">import</span> <span class="n">Rental</span>
+<span class="kn">from</span> <span class="nn">model.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">model.boat</span> <span class="kn">import</span> <span class="n">Boat</span>
+<span class="kn">from</span> <span class="nn">exception.dni_format_exception</span> <span class="kn">import</span> <span class="n">DNIFormatException</span>
+
+<span class="kn">import</span> <span class="nn">test_data</span>
+
+
+<div class="viewcode-block" id="RentalManagement"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement">[docs]</a><span class="k">class</span> <span class="nc">RentalManagement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clase que encapsula el programa de gestión de alquileres.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inicialización de la clase para la gestión de alquileres.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clients</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boats</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rentals</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Menú de opciones</span>
+
+<span class="s2">(1) Añadir cliente</span>
+<span class="s2">(2) Borrar cliente</span>
+<span class="s2">(3) Mostrar lista clientes</span>
+<span class="s2">(4) Mostrar detalle cliente</span>
+<span class="s2">(5) Añadir barco</span>
+<span class="s2">(6) Borrar barco</span>
+<span class="s2">(7) Añadir alquiler</span>
+<span class="s2">(8) Terminar</span>
+
+<span class="s2">Elige una opción: &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="RentalManagement.del_client"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement.del_client">[docs]</a>    <span class="k">def</span> <span class="nf">del_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Borra un cliente.</span>
+
+<span class="sd">        Pide al usuario el número de cliente para borrarlo.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Introduce el numero del cliente que quieres borrar: &quot;</span><span class="p">)</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No existe ningún cliente con ese número&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="p">[</span><span class="n">num</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RentalManagement.add_client"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement.add_client">[docs]</a>    <span class="k">def</span> <span class="nf">add_client</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Añade un cliente.</span>
+
+<span class="sd">        Pide los datos de un cliente y lo añade al diccionario.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Introduce los datos del cliente:&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">num</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Introduce el número de cliente: &quot;</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Introduce el nombre: &quot;</span><span class="p">)</span>
+            <span class="n">dni</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Introduce el dni: &quot;</span><span class="p">)</span>
+            <span class="n">phone</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Introduce el teléfono: &quot;</span><span class="p">)</span>
+
+            <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">client_num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">dni</span><span class="o">=</span><span class="n">dni</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">phone</span><span class="o">=</span><span class="n">phone</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="p">[</span><span class="n">client</span><span class="o">.</span><span class="n">client_num</span><span class="p">]</span> <span class="o">=</span> <span class="n">client</span>
+        <span class="k">except</span> <span class="n">DNIFormatException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> No se ha añadido el cliente: </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RentalManagement.show_client_list"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement.show_client_list">[docs]</a>    <span class="k">def</span> <span class="nf">show_client_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Muestra la lista de clientes.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">cli_num</span><span class="p">,</span> <span class="n">cli</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RentalManagement.show_client_details"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement.show_client_details">[docs]</a>    <span class="k">def</span> <span class="nf">show_client_details</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Muestra los detalles de un cliente.</span>
+
+<span class="sd">        No implementado.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Opción no implementada&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RentalManagement.add_boat"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement.add_boat">[docs]</a>    <span class="k">def</span> <span class="nf">add_boat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Añade un barco.</span>
+
+<span class="sd">        No implementado</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Opción no implementada&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RentalManagement.del_boat"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement.del_boat">[docs]</a>    <span class="k">def</span> <span class="nf">del_boat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Borra un barco</span>
+
+<span class="sd">        No implementado&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Opción no implementada&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RentalManagement.add_rent"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement.add_rent">[docs]</a>    <span class="k">def</span> <span class="nf">add_rent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Añade un alquiler.</span>
+
+<span class="sd">        No implementado.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Opción no implementada&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RentalManagement.run_app"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement.run_app">[docs]</a>    <span class="k">def</span> <span class="nf">run_app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Ejecucion del programa.</span>
+
+<span class="sd">        Muestra el menú y llama a la opción correspondiente en función del</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">option</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">option</span> <span class="o">!=</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="n">option</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">option</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_client</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">option</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">del_client</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">option</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">show_client_list</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">option</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">show_client_details</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">option</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Opción no implementada&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">option</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Opción no implementada&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">option</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Opción no implementada&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No existe la opción </span><span class="si">{</span><span class="n">option</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RentalManagement.load_test_data"><a class="viewcode-back" href="../app.html#rental_app.RentalManagement.load_test_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_test_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Carga datos de prueba.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clients</span> <span class="o">=</span> <span class="n">test_data</span><span class="o">.</span><span class="n">clients</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boats</span> <span class="o">=</span> <span class="n">test_data</span><span class="o">.</span><span class="n">boats</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">gestion</span> <span class="o">=</span> <span class="n">RentalManagement</span><span class="p">()</span>
+    <span class="n">gestion</span><span class="o">.</span><span class="n">load_test_data</span><span class="p">()</span>
+    <span class="n">gestion</span><span class="o">.</span><span class="n">run_app</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Nombre autor.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
