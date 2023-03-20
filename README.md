@@ -4,4 +4,4 @@ Ejemplo de uso de sphinx para la generación de documentación basado en el ejer
 
 Documentación de ejemplo generada: 
 
-https://almamallo.github.io/ejemplo-sphinx-pi/
+https://almamallo.github.io/ejemplo_sphinx_pi/
