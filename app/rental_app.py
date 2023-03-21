@@ -9,6 +9,7 @@ Módulo principal de la aplicación. Funcionalidades:
 - Gestión de clientes
 - Gestión de barcos
 - Gestión de alquileres
+Este es un cambio de Cesar Javier
 """
 
 from model.rental import Rental
