@@ -6,4 +6,4 @@ Documentación de ejemplo generada:
 
 https://almamallo.github.io/ejemplo_sphinx_pi/
 
-############################################################
+
